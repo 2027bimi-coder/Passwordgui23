@@ -131,3 +131,4 @@ def displaySignUp(signFrame):
 
     # display frame
     signFrame.grid(row=1, column=0, columnspan=3, rowspan=15, sticky="nsew")
+
