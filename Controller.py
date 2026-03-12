@@ -3,13 +3,14 @@ import SignUp
 import LogIn
 
 #code to create the windows
-window, headFrame, mainFrame = SignUp.setupWindow()
+window, headFrame, logInFrame, signUpFrame = SignUp.setupWindow()
 
 #Display log in
 LogIn.displayHeader(headFrame)
-LogIn.displayLogIn(mainFrame)
+LogIn.setUpLogIn(logInFrame)
 #SignUp.displayHeader(headFrame)
 #SignUp.displaySignUp(mainFrame)
 
 window.mainloop() #update window
+
 
