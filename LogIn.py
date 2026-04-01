@@ -13,7 +13,7 @@ def displayHeader(headFrame):
     # display frame
     headFrame.grid(row=0, column=0, sticky="ew", columnspan=3)
 
-def setUpLogIn(LogInFrame):
+def setUpLogIn(LogInFrame, signUpPage, loginAttempt):
     """
     Adds all elements for the main frame of signup screen and displays the frame
     """
@@ -55,10 +55,26 @@ def setUpLogIn(LogInFrame):
     ForgotpwLabel.grid(row=6, column=1, columnspan=3, padx=10, sticky="w")
 
     # Submit button
-    submit = Button(master=LogInFrame, width=31, bg="#2699FB", text="Submit", borderless=1, fg="#FFFFFF")
+    submit = Button(master=LogInFrame, width=31, bg="#2699FB", text="Submit", borderless=1, fg="#FFFFFF",
+                    command=lambda:loginAttempt(emailText.get(), passwordText.get(), errorLabel))
+
     submit.grid(row=8, pady=20, column=0, columnspan=3, sticky="nsew")
+
 
     # sign up section
     SignUpLabel = tk.Label(master=LogInFrame, text="Don't have an Account? Sign up", font=("Arial", 16, "underline"),
                              cursor="hand2", fg="#2699FB", bg="#FAFAFA", height=3)
     SignUpLabel.grid(row=9, column=0, columnspan=3, padx=10, sticky="ew")
+    SignUpLabel.bind("<Button-1>", signUpPage)
+    return LogInFrame
+
+def displayLogUp(LogInFrame, headFrame):
+    displayHeader(headFrame)
+
+    LogInFrame.grid(row=1, column=0, columnspan=3, rowspan=15, sticky="nsew")
+
+def hideLogIn(LogInFrame, headFrame):
+    LogInFrame.grid_forget()
+
+    for widget in headFrame.winfo_children():
+            widget.destroy()

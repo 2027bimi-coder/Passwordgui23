@@ -52,11 +52,13 @@ def displayHeader(headFrame):
     # display frame
     headFrame.grid(row=0, column=0, sticky="ew", columnspan=3)
 
-def displaySignUp(signFrame):
+def setUpSignUp(signFrame, headFrame, validatePW):
     """
     Adds all elements for the main frame of signup screen and displays the frame
     """
+    displayHeader(headFrame)
     # add elements
+
 
     # Name label and textbox
     nameLabel = tk.Label(master=signFrame, text="Full Name", fg="#000000", bg="#FAFAFA", height=3)
@@ -116,6 +118,12 @@ def displaySignUp(signFrame):
                            fg="#F20847",bg="#FAFAFA")
     pwCharLabel.grid(row=11, column=0, columnspan=3, padx=50, sticky="w")
 
+    pwText.trace_add("write",
+                     lambda *args, confirmPassword=pwConText, labels=[pwMatchLabel, pwLengthLabel, pwCharLabel],
+                            password=pwText: validatePW(*args, password, confirmPassword, labels))
+    pwConText.trace_add("write", lambda *args, password=pwText, labels=[pwMatchLabel, pwLengthLabel, pwCharLabel],
+                                        confirmPassword=pwConText: validatePW(*args, password, confirmPassword, labels))
+
     # Birthdate label and date entry
     bDayLabel = tk.Label(master=signFrame, text="Birthdate ", fg="#000000", bg="#FAFAFA", height=3)
     bDayLabel.grid(row=12, column=0, columnspan=3, padx=10, sticky="w")
@@ -130,6 +138,25 @@ def displaySignUp(signFrame):
     submit = Button(master=signFrame, width=31, bg="#2699FB", text="Submit",borderless=1, fg="#FFFFFF")
     submit.grid(row=14, pady=20, column=0, columnspan=3, sticky="nsew")
 
-    # display frame
+    return signFrame
+
+
+
+def displaySignUp(signFrame, headFrame):
+    displayHeader(headFrame)
+
     signFrame.grid(row=1, column=0, columnspan=3, rowspan=15, sticky="nsew")
+
+def hideSignUp(signFrame, headFrame):
+    headFrame.grid_forget()
+
+    for widget in headFrame.winfo_children():
+        widget.destroy()
+
+
+def colorValidLabel(vLabel):
+    vLabel.config(fg="#00BC16")
+
+def colorInvalidLabel(vLabel):
+    vLabel.config(fg="#F20847")
 
