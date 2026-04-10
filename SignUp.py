@@ -140,8 +140,6 @@ def setUpSignUp(signFrame, headFrame, validatePW):
 
     return signFrame
 
-
-
 def displaySignUp(signFrame, headFrame):
     displayHeader(headFrame)
 
