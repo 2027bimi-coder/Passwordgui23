@@ -34,9 +34,10 @@ def setUpLogIn(LogInFrame, signUpPage, loginAttempt):
     passwordLabel = tk.Label(master=LogInFrame, text="Enter your password:", fg="#000000", bg="#FAFAFA", height=3)
     passwordLabel.grid(row=3, column=0, columnspan=3, padx=10, sticky="w")
     passwordText = tk.StringVar()
-    passwordText.set("*******")
+    passwordText.set("")
     passwordBox = tk.Entry(master=LogInFrame, width=30, font=('calibre', 18, 'normal'),
                         textvariable=passwordText, bg="#FFFFFF", fg="#2699FB",
+                           show="*",
                         highlightthickness=1, relief="flat", highlightcolor="#2699FB",
                         highlightbackground="#2699FB")
     passwordBox.grid(row=4, column=0, columnspan=3, padx=30, sticky="w")

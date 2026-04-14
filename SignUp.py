@@ -64,7 +64,7 @@ def setUpSignUp(signFrame, headFrame, validatePW):
     nameLabel = tk.Label(master=signFrame, text="Full Name", fg="#000000", bg="#FAFAFA", height=3)
     nameLabel.grid(row=1, column=0, columnspan=3, padx=10, sticky="w")
     nameText = tk.StringVar()
-    nameText.set("Tara Matuszek")
+    nameText.set("Mirai Bistriteanu")
     nameBox = tk.Entry(master=signFrame, width=30, font=('calibre',18,'normal'),
                        textvariable=nameText, bg="#FFFFFF",  fg="#2699FB",
                        highlightthickness=1, relief="flat",highlightcolor="#2699FB",
@@ -75,7 +75,7 @@ def setUpSignUp(signFrame, headFrame, validatePW):
     emailLabel = tk.Label(master=signFrame, text="Email", fg="#000000", bg="#FAFAFA", height=3)
     emailLabel.grid(row=3, column=0, columnspan=3, padx=10, sticky="w")
     emailText = tk.StringVar()
-    emailText.set("tmatuszek@seisen.com")
+    emailText.set("2027bimi@seisen.com")
     emailBox = tk.Entry(master=signFrame, width=30, font=('calibre', 18, 'normal'),
                        textvariable=emailText, bg="#FFFFFF", fg="#2699FB",
                        highlightthickness=1, relief="flat",highlightcolor="#2699FB",
@@ -86,9 +86,10 @@ def setUpSignUp(signFrame, headFrame, validatePW):
     pwLabel = tk.Label(master=signFrame, text="Password", fg="#000000", bg="#FAFAFA", height=3)
     pwLabel.grid(row=5, column=0, columnspan=3, padx=10, sticky="w")
     pwText = tk.StringVar()
-    pwText.set("********")
+    pwText.set("")
     pwBox = tk.Entry(master=signFrame, width=30, font=('calibre', 18, 'normal'),
                         textvariable=pwText, bg="#FFFFFF", fg="#2699FB",
+                        show="*",
                         highlightthickness=1, relief="flat",highlightcolor="#2699FB",
                         highlightbackground="#2699FB")
     pwBox.grid(row=6, column=0, columnspan=3, padx=30, sticky="w")
@@ -97,10 +98,11 @@ def setUpSignUp(signFrame, headFrame, validatePW):
     pwConLabel = tk.Label(master=signFrame, text="Confirm Password", fg="#000000", bg="#FAFAFA", height=3)
     pwConLabel.grid(row=7, column=0, columnspan=3, padx=10, sticky="w")
     pwConText = tk.StringVar()
-    pwConText.set("********")
+    pwConText.set("")
     pwConBox = tk.Entry(master=signFrame, width=30, font=('calibre', 18, 'normal'),
                      textvariable=pwConText, bg="#FFFFFF", fg="#2699FB",
                      highlightthickness=1, relief="flat",highlightcolor="#2699FB",
+                        show="*",
                      highlightbackground="#2699FB")
     pwConBox.grid(row=8, column=0, columnspan=3, padx=30, sticky="w")
 
@@ -135,7 +137,17 @@ def setUpSignUp(signFrame, headFrame, validatePW):
 
 
     # Submit button
-    submit = Button(master=signFrame, width=31, bg="#2699FB", text="Submit",borderless=1, fg="#FFFFFF")
+    submit = submit = Button(
+    master=signFrame,
+    width=31,
+    bg="#2699FB",
+    text="Submit",
+    borderless=1,
+    fg="#FFFFFF",
+    command=lambda: print("Valid:", validatePW(None, None, None, pwText, pwConText,
+                                               [pwMatchLabel, pwLengthLabel, pwCharLabel]))
+    )
+
     submit.grid(row=14, pady=20, column=0, columnspan=3, sticky="nsew")
 
     return signFrame
@@ -144,6 +156,7 @@ def displaySignUp(signFrame, headFrame):
     displayHeader(headFrame)
 
     signFrame.grid(row=1, column=0, columnspan=3, rowspan=15, sticky="nsew")
+    signFrame.update_idletasks()
 
 def hideSignUp(signFrame, headFrame):
     headFrame.grid_forget()

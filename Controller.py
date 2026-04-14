@@ -13,6 +13,9 @@ def validatePW(*args):
     # then labels list (5) [match, length, char]
     validPW = True
     password = args[3].get()
+    confirmPassword = args[4].get()
+    labels = args[5]
+
     print("called with:" + password)
 
     # check for special character
@@ -24,6 +27,7 @@ def validatePW(*args):
             foundchar = True
 
     if len(password) < 8:
+        validPW = False
         length = False
         SignUp.colorInvalidLabel(args[5][1])
     else:
@@ -31,11 +35,19 @@ def validatePW(*args):
         SignUp.colorValidLabel(args[5][1])
 
     if not foundchar:
+        validPW = False
         foundchar = False
         SignUp.colorInvalidLabel(args[5][2])
     else:
         foundchar = True
         SignUp.colorValidLabel(args[5][2])
+
+    # check if passwords match
+    if password != confirmPassword:
+        SignUp.colorInvalidLabel(labels[0])
+        validPW = False
+    else:
+        SignUp.colorValidLabel(labels[0])
 
 
     return validPW

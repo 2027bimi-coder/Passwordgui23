@@ -82,7 +82,7 @@ def loginAttempt(email, password,):
             # yes --> return true
             print(CurRow)
             con.close()  # end connection
-            return True
+            return False
 
     con.close()  # end connection
     return False
