@@ -1,6 +1,7 @@
 
 import SignUp
 import LogIn
+import Model
 
 #code to create the windows
 window, headFrame, logInFrame, signFrame = SignUp.setupWindow()
@@ -42,6 +43,11 @@ def validatePW(*args):
 
 def loginAttempt(email,password, errorLabel):
     print ("called with " + email +"and" + password)
+    if Model.loginAttempt(email, password) == True:
+        print ("successfully logged in --> next page")
+    else:
+        print("error logging in")
+
 
 
 
