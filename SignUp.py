@@ -3,6 +3,9 @@ from tkmacosx import Button
 import pathlib, os
 #from tkcalendar2 import tkcalendar
 
+def clearEntry(event, entryBox):
+    entryBox.delete(0, "end")
+
 def setupWindow():
     """
     Create and setup the window, including frames for header and main page
@@ -32,7 +35,7 @@ def setupWindow():
 
     return window, headFrame, signUpFrame, logInFrame
 
-def displayHeader(headFrame):
+def displayHeader(headFrame, goBack):
     """
     Adds the back arrow and top label for the header frame + displays header
     """
@@ -51,12 +54,14 @@ def displayHeader(headFrame):
 
     # display frame
     headFrame.grid(row=0, column=0, sticky="ew", columnspan=3)
+    if callable(goBack):
+        imgArwLabel.bind("<Button-1>", goBack)
 
-def setUpSignUp(signFrame, headFrame, validatePW):
+def setUpSignUp(signFrame, headFrame, validatePW, submitAttempt, goBack):
     """
     Adds all elements for the main frame of signup screen and displays the frame
     """
-    displayHeader(headFrame)
+    displayHeader(headFrame, goBack)
     # add elements
 
 
@@ -64,48 +69,50 @@ def setUpSignUp(signFrame, headFrame, validatePW):
     nameLabel = tk.Label(master=signFrame, text="Full Name", fg="#000000", bg="#FAFAFA", height=3)
     nameLabel.grid(row=1, column=0, columnspan=3, padx=10, sticky="w")
     nameText = tk.StringVar()
-    nameText.set("Mirai Bistriteanu")
+    nameText.set("enter your full name")
     nameBox = tk.Entry(master=signFrame, width=30, font=('calibre',18,'normal'),
                        textvariable=nameText, bg="#FFFFFF",  fg="#2699FB",
                        highlightthickness=1, relief="flat",highlightcolor="#2699FB",
                        highlightbackground="#2699FB")
     nameBox.grid(row=2, column=0, columnspan=3, padx=30, sticky="w")
+    nameBox.bind("<FocusIn>", lambda event: clearEntry(event, nameBox))
 
     # email label and textbox
     emailLabel = tk.Label(master=signFrame, text="Email", fg="#000000", bg="#FAFAFA", height=3)
     emailLabel.grid(row=3, column=0, columnspan=3, padx=10, sticky="w")
     emailText = tk.StringVar()
-    emailText.set("2027bimi@seisen.com")
+    emailText.set("Enter Email")
     emailBox = tk.Entry(master=signFrame, width=30, font=('calibre', 18, 'normal'),
                        textvariable=emailText, bg="#FFFFFF", fg="#2699FB",
                        highlightthickness=1, relief="flat",highlightcolor="#2699FB",
                        highlightbackground="#2699FB")
     emailBox.grid(row=4, column=0, columnspan=3, padx=30, sticky="w")
-
+    emailBox.bind("<FocusIn>", lambda event: clearEntry(event, emailBox))
     # password label and textbox
     pwLabel = tk.Label(master=signFrame, text="Password", fg="#000000", bg="#FAFAFA", height=3)
     pwLabel.grid(row=5, column=0, columnspan=3, padx=10, sticky="w")
     pwText = tk.StringVar()
-    pwText.set("")
+    pwText.set("Enter Password")
     pwBox = tk.Entry(master=signFrame, width=30, font=('calibre', 18, 'normal'),
                         textvariable=pwText, bg="#FFFFFF", fg="#2699FB",
                         show="*",
                         highlightthickness=1, relief="flat",highlightcolor="#2699FB",
                         highlightbackground="#2699FB")
     pwBox.grid(row=6, column=0, columnspan=3, padx=30, sticky="w")
+    pwBox.bind("<FocusIn>", lambda event: clearEntry(event, pwBox))
 
     # confirm password label and textbox
     pwConLabel = tk.Label(master=signFrame, text="Confirm Password", fg="#000000", bg="#FAFAFA", height=3)
     pwConLabel.grid(row=7, column=0, columnspan=3, padx=10, sticky="w")
     pwConText = tk.StringVar()
-    pwConText.set("")
+    pwConText.set("Enter Password")
     pwConBox = tk.Entry(master=signFrame, width=30, font=('calibre', 18, 'normal'),
                      textvariable=pwConText, bg="#FFFFFF", fg="#2699FB",
                      highlightthickness=1, relief="flat",highlightcolor="#2699FB",
                         show="*",
                      highlightbackground="#2699FB")
     pwConBox.grid(row=8, column=0, columnspan=3, padx=30, sticky="w")
-
+    pwConBox.bind("<FocusIn>", lambda event: clearEntry(event, pwConBox))
     # Password parameters (matching, length >= 8, contains special character)
 
     pwMatchLabel = tk.Label(master=signFrame, text="Passwords must match",
@@ -135,6 +142,10 @@ def setUpSignUp(signFrame, headFrame, validatePW):
     dateLabel = tk.Label(master=signFrame, text="Select a date", fg="#2699FB", bg="#FAFAFA", height=3)
     dateLabel.grid(row=13, column=2, padx=10, sticky="w")
 
+    #error message
+    errorLabel = SignInLabel = tk.Label(master= signFrame, text="",)
+    errorLabel.grid(row=15, column=0, columnspan=3)
+    errorLabel.bind("<Button-1>", lambda event: errorLabel.config(text=""))
 
     # Submit button
     submit = submit = Button(
@@ -144,16 +155,13 @@ def setUpSignUp(signFrame, headFrame, validatePW):
     text="Submit",
     borderless=1,
     fg="#FFFFFF",
-    command=lambda: print("Valid:", validatePW(None, None, None, pwText, pwConText,
-                                               [pwMatchLabel, pwLengthLabel, pwCharLabel]))
-    )
-
+    command=lambda: submitAttempt(nameText.get(), emailText.get(), pwText.get(), errorLabel))
     submit.grid(row=14, pady=20, column=0, columnspan=3, sticky="nsew")
 
     return signFrame
 
-def displaySignUp(signFrame, headFrame):
-    displayHeader(headFrame)
+def displaySignUp(signFrame, headFrame, goBack):
+    displayHeader(headFrame, goBack)
 
     signFrame.grid(row=1, column=0, columnspan=3, rowspan=15, sticky="nsew")
     signFrame.update_idletasks()

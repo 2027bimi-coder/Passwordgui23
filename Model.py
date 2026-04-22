@@ -8,7 +8,7 @@ def createUserTable():
 
 
     #cur.execute("DROP TABLE users") # create a new table
-    cur.execute("CREATE TABLE users(name, email, password, birthdate)") # create a new table
+    cur.execute("CREATE TABLE IF NOT EXISTS users(name, email, password, birthdate)") # create a new table
 
     con.commit() # save changes
     con.close() # end connection
@@ -26,17 +26,17 @@ def createRoleTable():
     con.close() # end connection
 
 def lookupUser(email):
-    con = sqlite3.connect("user.db")  # create/access database file
+    con = sqlite3.connect("user.db")
+    cur = con.cursor()
 
-    cur = con.cursor()  # we need this to do anything in our database
+    results = cur.execute("SELECT email FROM users")
 
-    results = cur.execute("SELECT email FROM users")  # create a new table
     for CurRow in results.fetchall():
-        if email in CurRow:
-            con.close()  # end connection
+        if email == CurRow[0]:
+            con.close()
             return True
 
-    con.close()  # end connection
+    con.close()
     return False
 
 #print(lookupUser("2027bimi@seisen.com"))
@@ -57,7 +57,7 @@ def createUser(name, email, password, birthdate = None):
      #only creates user when they didnt exist)
 
 #createUserTable()
-createUser ("Mirai", "2027bimi@seisen.com", "miraipassword", "0616")
+#createUser ("Mirai", "2027bimi@seisen.com", "miraipassword", "0616")
 #createRoleTable()
 
 #login function --> check for matching username + password combo
@@ -88,4 +88,4 @@ def loginAttempt(email, password,):
     return False
 
 
-loginAttempt("2027bimi@seisen.com", "miraipassword",)
+#loginAttempt("2027bimi@seisen.com", "miraipassword",)
