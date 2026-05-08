@@ -44,6 +44,7 @@ def passwordResetEmail(*args):
 #code to create the windows
 window, headFrame, signFrame, logInFrame = SignUp.setupWindow()
 
+#Make function that hides sign up and displays logUp page
 def backToLogin(event= None):
     SignUp.hideSignUp(signFrame, headFrame)
     LogIn.displayLogUp(logInFrame, headFrame)
@@ -60,6 +61,9 @@ def validatePW(*args):
     print("called with:" + password)
 
     # check for special character
+    #1. define Special char
+    #2. set flag, with default to False
+    #3. If found --> flag is true
     specialcharacters = ['!', '@', '#', '$', '%', '^', '&', '*', '(', ')', '[', ']', '{', '}', '?']
     foundchar = False
 
@@ -67,6 +71,7 @@ def validatePW(*args):
         if spchar in password:
             foundchar = True
 
+    #check if word is longer than 8 characters
     if len(password) < 8:
         validPW = False
         length = False
@@ -103,7 +108,14 @@ def loginAttempt(email, password, errorLabel):
     else:
         errorLabel.config(text="Invalid email or password", fg="red")
 
-
+# in submit attempt Check:
+#if the user already exists
+#if the password is valid
+#if the user is at least 13 years old
+#If all checks pass:
+#creates the new user in the database
+#displays a success message
+#returns the user to the login page
 def submitAttempt(name, email, password, errorLabel, birthdate=None):
     print("called with:" + email + " and " + password)
 # check if user already exists
