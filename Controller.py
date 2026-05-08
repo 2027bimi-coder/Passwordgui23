@@ -3,9 +3,11 @@ import SignUp
 import LogIn
 import Model
 import smtplib
+import sqlite3
 from email.message import EmailMessage
 
 
+#send an email to assigned email adress to reset password
 def passwordResetEmail(*args):
     # get args for email and label
     print(args)
@@ -28,10 +30,16 @@ def passwordResetEmail(*args):
         server.login("miraibistriteanucoco@gmail.com", "ammt vwwz ignz bivz")
         server.send_message(msg)
         server.quit()
+        con = sqlite3.connect("user.db")
+        cur = con.cursor()
+        cur.execute("UPDATE users SET password=? WHERE email=?", ("TestPW1!", email))
+        con.commit()
+        con.close()
 
-
+        errorLabel.config(text="Reset email sent!", fg="green")
     except Exception as e:
         print(e)
+        errorLabel.config(text="Email not found or send failed", fg="red")
 
 #code to create the windows
 window, headFrame, signFrame, logInFrame = SignUp.setupWindow()
@@ -85,7 +93,8 @@ def validatePW(*args):
 
     return validPW
 
-
+#Call database
+# updates error label with success/failure
 def loginAttempt(email, password, errorLabel):
     print("called with " + email + " and " + password)
 
@@ -112,6 +121,9 @@ def submitAttempt(name, email, password, errorLabel, birthdate=None):
         return
 
     # create user
+    if not Model.checkAge(birthdate):
+        errorLabel.config(text="You must be at least 13 years old", fg="red")
+        return
     Model.createUser(name, email, password, birthdate)
 
     # success message
@@ -119,6 +131,10 @@ def submitAttempt(name, email, password, errorLabel, birthdate=None):
 
     # go back to login page
     backToLogin(None)
+
+    #if not eligibe for age, cannot create an account
+
+    #are they 13 or over? 
 
 def signUpPage(event):
     LogIn.hideLogIn(logInFrame, headFrame, passwordResetEmail)

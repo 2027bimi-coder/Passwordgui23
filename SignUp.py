@@ -1,7 +1,7 @@
 import tkinter as tk
 from tkmacosx import Button
 import pathlib, os
-#from tkcalendar2 import tkcalendar
+from tkcalendar import Calendar
 
 def clearEntry(event, entryBox):
     entryBox.delete(0, "end")
@@ -16,9 +16,11 @@ def setupWindow():
     """
     # create window & update size / title
     window = tk.Tk(className="Password Project")
+
     window.geometry("399x864")  # 3 x 16grid
 
     # configure layout
+    # Divides the window into 3 equal columns.
     for c in range(0,3):
         window.columnconfigure(c, weight=1, minsize=100)
     weights=[1,1,1,1,1,1,1,1,1,3,1,1,2]
@@ -89,6 +91,7 @@ def setUpSignUp(signFrame, headFrame, validatePW, submitAttempt, goBack):
     emailBox.grid(row=4, column=0, columnspan=3, padx=30, sticky="w")
     emailBox.bind("<FocusIn>", lambda event: clearEntry(event, emailBox))
     # password label and textbox
+
     pwLabel = tk.Label(master=signFrame, text="Password", fg="#000000", bg="#FAFAFA", height=3)
     pwLabel.grid(row=5, column=0, columnspan=3, padx=10, sticky="w")
     pwText = tk.StringVar()
@@ -126,7 +129,8 @@ def setUpSignUp(signFrame, headFrame, validatePW, submitAttempt, goBack):
     pwCharLabel = tk.Label(master=signFrame, text="Passwords must include a special character",
                            fg="#F20847",bg="#FAFAFA")
     pwCharLabel.grid(row=11, column=0, columnspan=3, padx=50, sticky="w")
-
+    #make sure as pw is written it is valid
+    #(call function (validatePW))
     pwText.trace_add("write",
                      lambda *args, confirmPassword=pwConText, labels=[pwMatchLabel, pwLengthLabel, pwCharLabel],
                             password=pwText: validatePW(*args, password, confirmPassword, labels))
@@ -136,11 +140,12 @@ def setUpSignUp(signFrame, headFrame, validatePW, submitAttempt, goBack):
     # Birthdate label and date entry
     bDayLabel = tk.Label(master=signFrame, text="Birthdate ", fg="#000000", bg="#FAFAFA", height=3)
     bDayLabel.grid(row=12, column=0, columnspan=3, padx=10, sticky="w")
-   # cal = tkcalendar.Calendar(master=signFrame)
-    #cal.grid(row=13, column=0, columnspan=2, padx=30, sticky="w")
+    #creating the calender
+    cal = Calendar(master=signFrame)
+    cal.grid(row=13, column=0, columnspan=2, padx=30, sticky="w")
 
     dateLabel = tk.Label(master=signFrame, text="Select a date", fg="#2699FB", bg="#FAFAFA", height=3)
-    dateLabel.grid(row=13, column=2, padx=10, sticky="w")
+    dateLabel.grid(row=14, column=2, padx=10, sticky="w")
 
     #error message
     errorLabel = SignInLabel = tk.Label(master= signFrame, text="",)
@@ -155,8 +160,8 @@ def setUpSignUp(signFrame, headFrame, validatePW, submitAttempt, goBack):
     text="Submit",
     borderless=1,
     fg="#FFFFFF",
-    command=lambda: submitAttempt(nameText.get(), emailText.get(), pwText.get(), errorLabel))
-    submit.grid(row=14, pady=20, column=0, columnspan=3, sticky="nsew")
+    command=lambda: submitAttempt(nameText.get(), emailText.get(), pwText.get(), errorLabel, cal.get_date()))
+    submit.grid(row=16, pady=20, column=0, columnspan=3, sticky="nsew")
 
     return signFrame
 

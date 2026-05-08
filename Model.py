@@ -1,4 +1,28 @@
 import sqlite3
+from errno import EUSERS
+
+from datetime import datetime
+
+def checkAge(birthdate, minimumAge=13):
+    try:
+        # convert string from calendar into a date object
+        birthDate = datetime.strptime(birthdate, "%m/%d/%Y")
+
+        # today's date
+        today = datetime.today()
+
+        # basic age calculation
+        age = today.year - birthDate.year
+
+        # if birthday hasn't happened yet this year
+        if (today.month, today.day) < (birthDate.month, birthDate.day):
+            age -= 1
+
+        return age >= minimumAge
+
+    except ValueError:
+        # invalid date format
+        return False
 
 def createUserTable():
 
@@ -13,18 +37,19 @@ def createUserTable():
     con.commit() # save changes
     con.close() # end connection
 
+#open/create database with file
 def createRoleTable():
 
     con = sqlite3.connect("user.db")  # create/access database file
-
     cur = con.cursor()  # we need this to do anything in our database
-
-
-    cur.execute("CREATE TABLE roles(userEmail, userRole, userVew, userUpdate , userDelete)") # create a new table
+    cur.execute("CREATE TABLE IF NOT EXISTS roles(userEmail, userRole, userView, userUpdate , userDelete)") # create a new table
 
     con.commit() # save changes
     con.close() # end connection
 
+#recieve email from database
+#If email match with whats written --> true
+#if not return false
 def lookupUser(email):
     con = sqlite3.connect("user.db")
     cur = con.cursor()
@@ -63,18 +88,16 @@ def createUser(name, email, password, birthdate = None):
 #login function --> check for matching username + password combo
 def loginAttempt(email, password,):
 
-
         # no --> return false
     #If we dont --> return False
-
     con = sqlite3.connect("user.db")  # create/access database file
-
     cur = con.cursor()  # we need this to do anything in our database
 
-    # find user with this email adress
+    # find user with this email address
     results = cur.execute("SELECT email, password FROM users")  # create a new table
+    #loop through all users
     for CurRow in results.fetchall():
-        if email == CurRow[0]:  # if we do --> check if password matches
+        if email == CurRow[0]:  # if we find a matching email --> check if password matches
             if password == CurRow[1]:
                 print("Logged in successfully.")
                 con.close()
@@ -87,5 +110,64 @@ def loginAttempt(email, password,):
     con.close()  # end connection
     return False
 
+def lookUpRole(username, password):
+    con = sqlite3.connect("user.db")
+    cur = con.cursor()
 
-#loginAttempt("2027bimi@seisen.com", "miraipassword",)
+    results = cur.execute("""SELECT users.email, roles.userRole, users.name
+    FROM users
+    JOIN roles
+    ON users.email = roles.userEmail
+    WHERE users.email=? AND users.password=?
+    """, (username, password))
+
+    row = results.fetchone()
+    con.close()
+
+    if row:
+        return row[1]  # returns the role, "admin" or "user"
+    return None
+
+
+def updateRole(userEmail, newRole):
+
+    # allowed roles
+    validRoles = ["admin", "user", "employee"]
+
+    # check if role is valid
+    if newRole not in validRoles:
+        print("Invalid role.")
+        return False
+
+    con = sqlite3.connect("user.db")
+    cur = con.cursor()
+
+    # check if user exists
+    cur.execute(
+        "SELECT userEmail FROM roles WHERE userEmail=?",
+        (userEmail,)
+    )
+
+    result = cur.fetchone()
+
+    # if user does not exist
+    if result is None:
+        print("User not found.")
+        con.close()
+        return False
+
+    # update role
+    cur.execute(
+        "UPDATE roles SET userRole=? WHERE userEmail=?",
+        (newRole, userEmail)
+    )
+
+    con.commit()
+    con.close()
+
+    print("Role updated successfully.")
+    return True
+
+
+
+lookUpRole("2027bimi@seisen.com", "miraipassword")
